@@ -3,6 +3,7 @@
 namespace PavelPlot\App\Controllers;
 
 use mysql_xdevapi\CollectionModify;
+use PavelPlot\App\Config;
 use PavelPlot\App\Dtos\UserDto;
 use PavelPlot\App\Helpers\Helper;
 use PavelPlot\App\Models\User;
@@ -37,6 +38,7 @@ class IndexController
 
     public function registerUser(Request $request)
     {
+
         header('Content-Type: application/json; charset=utf-8');
         $user = UserDto::fromArray($request->getParams()['user']);
         $user_db = $this->user->find('login', $user->login);
@@ -48,6 +50,20 @@ class IndexController
              exit();
         }
         $user->password = password_hash($user->password, PASSWORD_BCRYPT);
+
+        if($_FILES && $_FILES['image']['error'] == UPLOAD_ERR_OK)
+        {
+            $name = Config::get('image_path')."/".time().".jpg";
+            if(!move_uploaded_file($_FILES['image']['tmp_name'], $_SERVER['DOCUMENT_ROOT'].$name)){
+                echo json_encode([
+                    'status' => '500',
+                    'message' => 'Ошибка при загрузке файла',
+                ]);
+                exit();
+            }
+            $user->image = $name;
+        }
+
         $this->user->create($user->toArray());
 
         echo json_encode([
@@ -80,6 +96,7 @@ class IndexController
             setcookie('name', $user_from_db['name'], time() + 3600);
             setcookie('login', $user_from_db['login'], time() + 3600);
             setcookie('date_birth', $user_from_db['date_birth'], time() + 3600);
+            setcookie('image', $user_from_db['image'], time() + 3600);
             echo json_encode([
                 'status' => '200',
                 'message' => 'Вы успешно вошли',
@@ -101,6 +118,7 @@ class IndexController
             setcookie('login', "", time() - 3600);
             setcookie('login', "", time() - 3600);
             setcookie('date_birth', "", time() - 3600);
+            setcookie('image', "", time() - 3600);
         }
         Helper::redirect('/login');
     }

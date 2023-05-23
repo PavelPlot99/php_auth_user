@@ -10,6 +10,7 @@ include 'Main/header.php';
                     <li>Имя <?=$_COOKIE['name']?></li>
                     <li>Логин <?=$_COOKIE['login']?></li>
                     <li>Дата рождения <?=$_COOKIE['date_birth']?></li>
+                    <li><img width="300" height="400" src="<?=$_COOKIE['image']?>" alt="Фото"> </li>
                 </ul>
             <?php }else {?>
                 <h1>Страница недоступна неавторизированным пользователям</h1>

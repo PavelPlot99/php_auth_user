@@ -5,4 +5,5 @@ return [
     'db_password' => 'root',
     'db_name' => 'aeon',
     'templates_path' => $_SERVER['DOCUMENT_ROOT']."/app/Templates",
+    'image_path' => "/photos"
 ];

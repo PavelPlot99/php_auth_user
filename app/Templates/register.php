@@ -19,8 +19,12 @@ include 'Main/header.php'
                     <input type="password" class="form-control" id="password" name="user[password]">
                 </div>
                 <div class="mb-3">
-                    <label for="name" class="form-label">Дата рождения</label>
-                    <input type="date" class="form-control" id="name" name="user[date_birth]">
+                    <label for="date" class="form-label">Дата рождения</label>
+                    <input type="date" class="form-control" id="date" name="user[date_birth]">
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Фото</label>
+                    <input type="file" class="form-control" id="image" name="image" required>
                 </div>
                 <input type="submit" class="btn btn-primary" value="Зарегистрироваться">
             </form>

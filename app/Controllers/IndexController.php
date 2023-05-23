@@ -37,10 +37,25 @@ class IndexController
 
     public function registerUser(Request $request)
     {
+        header('Content-Type: application/json; charset=utf-8');
         $user = UserDto::fromArray($request->getParams()['user']);
+        $user_db = $this->user->find('login', $user->login);
+        if(count($user_db) > 0){
+             echo json_encode([
+                'status' => '500',
+                'message' => 'Пользователь с таким логином существует',
+            ]);
+             exit();
+        }
         $user->password = password_hash($user->password, PASSWORD_BCRYPT);
         $this->user->create($user->toArray());
-        $this->view->renderHtml('login.php');
+
+        echo json_encode([
+            'status' => '200',
+            'message' => 'Вы успешно зарегистрировались',
+        ]);
+        exit();
+
     }
 
     public function getProfilePage(Request $request)
@@ -50,19 +65,33 @@ class IndexController
 
     public function login(Request $request)
     {
+        header('Content-Type: application/json; charset=utf-8');
         $user = UserDto::fromArray($request->getParams()['user']);
         $user_from_db = $this->user->find('login', $user->login);
         if (count($user_from_db) > 0) {
             $user_from_db = $user_from_db[0];
             if(!password_verify($user->password, $user_from_db['password'])){
-                Helper::redirect('login');
+                echo json_encode([
+                    'status' => '500',
+                    'message' => 'Неверный пароль',
+                ]);
+                exit();
             }
             setcookie('name', $user_from_db['name'], time() + 3600);
             setcookie('login', $user_from_db['login'], time() + 3600);
             setcookie('date_birth', $user_from_db['date_birth'], time() + 3600);
-            Helper::redirect('/profile');
+            echo json_encode([
+                'status' => '200',
+                'message' => 'Вы успешно вошли',
+            ]);
+            exit();
+
         }
-        Helper::redirect('/login');
+        echo json_encode([
+            'status' => '500',
+            'message' => 'Такого пользователя не существует',
+        ]);
+        exit();
     }
 
     public function logout(Request $request)

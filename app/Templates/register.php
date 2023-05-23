@@ -5,7 +5,7 @@ include 'Main/header.php'
     <div class="row justify-content-center py-2">
         <div class="col-4">
             <h1>Регистрация</h1>
-            <form action="/register" METHOD="post">
+            <form action="/register" METHOD="post" id="register-form">
                 <div class="mb-3">
                     <label for="name" class="form-label">Имя</label>
                     <input type="text" class="form-control" id="name" name="user[name]">
@@ -22,7 +22,7 @@ include 'Main/header.php'
                     <label for="name" class="form-label">Дата рождения</label>
                     <input type="date" class="form-control" id="name" name="user[date_birth]">
                 </div>
-                <input type="submit" value="Зарегистрироваться">
+                <input type="submit" class="btn btn-primary" value="Зарегистрироваться">
             </form>
         </div>
     </div>

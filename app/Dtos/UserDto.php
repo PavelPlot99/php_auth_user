@@ -4,13 +4,13 @@ namespace PavelPlot\App\Dtos;
 
 class UserDto
 {
-    public function __construct(public string $name, public string $login, public string $password, public string $date_birth)
+    public function __construct(public string|null $name, public string $login, public string $password, public string|null $date_birth)
     {
     }
 
     public static function fromArray(array $user): self
     {
-        return new self(...$user);
+        return new self($user['name'] ?? null, $user['login'], $user['password'], $user['date_birth'] ?? null);
     }
 
     public function toArray(): array

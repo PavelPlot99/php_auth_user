@@ -37,28 +37,44 @@ class Model
         $stmt->execute();
     }
 
-    public function get($limit, $page):array
+    public function find($row, $value)
+    {
+//        var_dump("SELECT * FROM $this->table WHERE `$row` = `$value`");
+        $stmt = $this->connection->prepare("SELECT * FROM $this->table WHERE `$row` = ?");
+        $stmt->bind_param('s', $value);
+        $stmt->execute();
+        $result_row = [];
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            $result_row[] = $row;
+        }
+
+        return $result_row;
+    }
+
+    public function get($limit, $page): array
     {
         $count = $this->count();
         $result = [];
-        if($count === 0){
+        if ($count === 0) {
             return [];
         }
-        if($count < $limit){
+        if ($count < $limit) {
             $result = $this->connection->query("SELECT * FROM $this->table");
-        }else {
+        } else {
             $offset = ($page - 1) * $limit;
             $result = $this->connection->query("SELECT * FROM $this->table LIMIT $offset , $limit");
         }
-        $result_array= [];
-        while ($row = $result->fetch_array(MYSQLI_ASSOC)){
+        $result_array = [];
+        while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
             $result_array[] = $row;
         }
 
-        return  $result_array;
+        return $result_array;
     }
 
-    public function count(){
+    public function count()
+    {
         $count = $this->connection->query("SELECT COUNT(*) FROM $this->table")->fetch_array();
         return (int)$count[0];
 
